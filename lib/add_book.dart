@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'adminSetup.dart';
+import 'homepage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:io';
 
+String genre1,genre2;
 var languages = [
   'English',
   'Hindi',
@@ -13,7 +17,7 @@ var languages = [
   'Japanese',
   'Spanish'
 ];
-var category = ['Novel', 'Educational', 'Comic', 'Manga', 'Spiritual'];
+var category = ['Novels', 'Educational', 'Comics', 'Mangas', 'Spiritual'];
 var subjects = ['Computer Science', 'Chemistry', 'Biology', 'Literature', 'Physics', 'Mathematics', 'Law', 'Accountancy', 'Business', 'Economics', 'Humanities'];
 var genres = ['Action', 'Adventure', 'Classic', 'Comedy', 'Fantasy', 'Fiction', 'History', 'Horror', 'Mystery', 'Poetry', 'Romance', 'Thriller'];
 var currentGenre1Selected;
@@ -56,16 +60,42 @@ class _AddBookState extends State<AddBook> {
   List<Widget> columnChild = [];
 
   Future<File> imageFile;
+  File _image;
+  String bkname,authname,link,description;
 
-  pickImageFromGallery(ImageSource source) {
+  Future getImage(bool gallery) async {
+    ImagePicker picker = ImagePicker();
+    PickedFile pickedFile;
+    // Let user select photo from gallery
+    if(gallery) {
+      pickedFile = await picker.getImage(
+        source: ImageSource.gallery,);
+    }
+    // Otherwise open camera to get new photo
+    else{
+      pickedFile = await picker.getImage(
+        source: ImageSource.camera,);
+    }
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path); // Use if you only need a single picture
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+ /* pickImageFromGallery(ImageSource source) {
     setState(() {
       imageFile = ImagePicker.pickImage(source: source);
+
     });
   }
 
   Widget showImage() {
     return FutureBuilder<File>(
       future: imageFile,
+
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
@@ -87,7 +117,7 @@ class _AddBookState extends State<AddBook> {
         }
       },
     );
-  }
+  }*/
 
 
   @override
@@ -130,6 +160,7 @@ class _AddBookState extends State<AddBook> {
                   child: TextField(
                     decoration: textFieldInputDecoration.copyWith(
                         hintText: 'Book Name'),
+                    onChanged: (val){bkname = val;},
                   ),
                 ),
               ),
@@ -139,6 +170,7 @@ class _AddBookState extends State<AddBook> {
                 child: Material(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   child: TextField(
+                    onChanged: (val){authname = val;},
                     decoration: textFieldInputDecoration.copyWith(
                         hintText: 'Author Name'),
                   ),
@@ -207,7 +239,7 @@ class _AddBookState extends State<AddBook> {
                           setState(() {
                             currentCategorySelected = newValueSelected;
                             columnChild = [];
-                            if(currentCategorySelected == 'Novel' || currentCategorySelected == 'Comic' || currentCategorySelected == 'Manga'){
+                            if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics' || currentCategorySelected == 'Mangas'){
                               columnChild.add(Divide());
                               columnChild.add(Genre1());
                               columnChild.add(Genre2());
@@ -239,6 +271,7 @@ class _AddBookState extends State<AddBook> {
                 child: Material(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   child: TextField(
+                    onChanged: (val){link = val;},
                     decoration: textFieldInputDecoration.copyWith(
                         hintText: 'Link'),
                   ),
@@ -250,6 +283,7 @@ class _AddBookState extends State<AddBook> {
                 child: Material(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   child: TextField(
+                    onChanged: (val){description = val;},
                     keyboardType: TextInputType.multiline,
                     maxLines: 8,
                     decoration:
@@ -266,7 +300,7 @@ class _AddBookState extends State<AddBook> {
                     width: 200.0,
                     child: FlatButton.icon(
                       onPressed: () {
-                        pickImageFromGallery(ImageSource.gallery);
+                        getImage(true);
                       },
                       icon: Icon(Icons.image),
                       label: Text('Image'),
@@ -276,7 +310,18 @@ class _AddBookState extends State<AddBook> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
-                child: showImage(),
+                child: _image != null ? Container(
+                    child: Image.file(
+                      _image,
+                      width: 300,
+                      height: 300,
+                    ),
+                )
+                : Container(
+                    child: Text(
+                  'No Image Selected',
+                  textAlign: TextAlign.center,
+                ))
               ),
               Padding(
                 padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
@@ -285,7 +330,14 @@ class _AddBookState extends State<AddBook> {
                   color: Color(0xFF02340F),
                   borderRadius: BorderRadius.circular(30.0),
                   child: RawMaterialButton(
-                    onPressed: null,
+                    onPressed: (){
+                      if (currentCategorySelected == 'Spiritual')
+                        addBook(bkname,authname,currentLanguageSelected,currentCategorySelected,link,description,_image);
+                      else
+                        addBook(bkname,authname,currentLanguageSelected,currentCategorySelected,link,description,_image,genre1,genre2);
+                      Fluttertoast.showToast(msg: 'Book Added Successfully',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                    },
                     padding: EdgeInsets.symmetric(horizontal: 70.0),
                     child: Text(
                       'ADD',
@@ -342,6 +394,7 @@ class _SubjectState extends State<Subject> {
               onChanged: (String newValueSelected) {
                 setState(() {
                   currentSubjectSelected = newValueSelected;
+                  genre1 = newValueSelected;
                 });
               },
               value: currentSubjectSelected,
@@ -388,6 +441,7 @@ class _Genre1State extends State<Genre1> {
               onChanged: (String newValueSelected) {
                 setState(() {
                   currentGenre1Selected = newValueSelected;
+                  genre1 = newValueSelected;
                 });
               },
               value: currentGenre1Selected,
@@ -434,6 +488,8 @@ class _Genre2State extends State<Genre2> {
               onChanged: (String newValueSelected) {
                 setState(() {
                   currentGenre2Selected = newValueSelected;
+                  genre2 = newValueSelected;
+
                 });
               },
               value: currentGenre2Selected,
@@ -477,6 +533,9 @@ class _TagState extends State<Tag> {
           child: TextField(
             decoration: textFieldInputDecoration.copyWith(
                 hintText: 'Tag'),
+            onChanged: (val){
+              genre2 = val;
+            },
           ),
         ),
       ),

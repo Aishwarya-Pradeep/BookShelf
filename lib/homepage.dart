@@ -1,8 +1,12 @@
+import 'package:bookshelf_admin/addBookDynamic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'add_book.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'deleteBook.dart';
 import 'loginpage.dart';
+import 'addBookDynamic.dart';
+import 'editBook.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -56,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 MaterialButton(
                   onPressed: (){Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => AddBook()));},
+                      builder: (context) => AddBook1()));},
                   color: Color(0xFF02340F),
                   child: Icon(
                     Icons.add_outlined,
@@ -82,7 +86,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-            onTap: () {AddBook();},
+            onTap: () {},
           ),
     ),
       Container(
@@ -99,7 +103,8 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 MaterialButton(
-                  onPressed: (){},
+                  onPressed: (){Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => editBook()));},
                   color: Color(0xFF02340F),
                   child: Icon(
                     Icons.edit_outlined,
@@ -124,7 +129,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          onTap: () {},
+          onTap: () {Navigator.push(context, MaterialPageRoute(
+              builder: (context) => editBook()));},
         ),
       ),
       Container(
@@ -141,7 +147,8 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 MaterialButton(
-                  onPressed: (){},
+                  onPressed: (){Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => deleteBook()));},
                   color: Color(0xFF02340F),
                   child: Icon(
                     Icons.highlight_remove_outlined,
@@ -166,7 +173,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          onTap: () {},
+          onTap: () {Navigator.push(context, MaterialPageRoute(
+              builder: (context) => deleteBook()));},
         ),
       ),
       ],

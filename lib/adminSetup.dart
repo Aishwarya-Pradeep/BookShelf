@@ -12,9 +12,23 @@ Future<void> adminSetup(String displayName) async{
   });
   return;
 }
-Future<void> addBook(String bookname,String author,String language,String category,String link,String description,File _image,[String genre1,String genre2]) async{
-  String path = 'Books/'+ category+'/'+'BookDetails',l;
-  l = await saveImages(_image,path);
+Future<void> addBook(String bookname,String author,String language,String category,File pdf,String description,String l,[String genre1,String genre2]) async{
+  String path = 'Books/'+ category+'/'+'BookDetails',link;
+  //l = await uploadFile(_image);
+  link = await uploadPDF(pdf);
+  if (genre1 == null){
+    CollectionReference bookDetails = FirebaseFirestore.instance.collection(path);
+    bookDetails.doc(bookname).set({
+      'bookName': bookname,
+      'author' : author,
+      'language' : language,
+      'category' : category,
+      'link' : link,
+      'description' : description,
+      'image' : l
+    });
+  }
+  else{
   CollectionReference bookDetails = FirebaseFirestore.instance.collection(path);
   bookDetails.doc(bookname).set({
     'bookName': bookname,
@@ -26,10 +40,21 @@ Future<void> addBook(String bookname,String author,String language,String catego
     'image' : l,
     'genre1' : genre1,
     'genre2' :genre2,
-  });
+  });}
+
 
 }
-Future<String> uploadFile(File _image,String path) async {
+Future<String> uploadPDF(File _pdf) async {
+  Reference storageReference = FirebaseStorage.instance
+      .ref()
+      .child('pdf/${Path.basename(_pdf.path)}');
+  UploadTask uploadTask = storageReference.putFile(_pdf);
+  String returnURL;
+  var url = await(await uploadTask).ref.getDownloadURL();
+  returnURL = url.toString();
+  return returnURL;
+}
+Future<String> uploadFile(File _image) async {
   Reference storageReference = FirebaseStorage.instance
       .ref()
       .child('bookimages/${Path.basename(_image.path)}');
@@ -39,7 +64,8 @@ Future<String> uploadFile(File _image,String path) async {
   returnURL = url.toString();
   return returnURL;
 }
-Future<String> saveImages(File _image,String path) async {
-    String imageURL = await uploadFile(_image,path);
-    return imageURL;
+Future<List> getBookNames() async{
+  final QuerySnapshot result = await FirebaseFirestore.instance.collectionGroup('BookDetails').get();
+  final List documents = result.docs;
+  return documents;
 }

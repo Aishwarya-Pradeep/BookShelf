@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                                   errormsg = "No such user! Please register";
                                   break;
                                 default:
-                                  errormsg = "Invalid! Please try again";
+                                  errormsg = "Invalid Credentials! Please try again";
                               }
                               Fluttertoast.showToast(msg: errormsg,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Colors.transparent,textColor: Colors.red,fontSize: 12.0);
                             }

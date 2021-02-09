@@ -16,19 +16,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final _auth = FirebaseAuth.instance;
   String username,email, password;
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-  Future<UserCredential> googleSignIn() async{
-    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    final UserCredential userCredential = await _auth.signInWithCredential(credential);
-    return userCredential;
-  }
+  bool emailValidate = true, passwordValidate = true, nameValidate = true ;
+  bool showSpinner = false;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController(),mailid = TextEditingController();
 
@@ -41,6 +30,57 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   bool usernameVal = false,passwordVal = false,mail = false;
+  void validateEmail(String email) {
+    final emailRegex =
+    RegExp(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+([\.-]?\w+)*(\.\w{2,3})+$');
+    if (email.isNotEmpty) {
+      if (emailRegex.hasMatch(email))
+        setState(() {
+          emailValidate = true;
+        });
+      else
+        setState(() {
+          emailValidate = false;
+        });
+    } else
+      setState(() {
+        emailValidate = false;
+      });
+  }
+
+  void validatePassword(String password) {
+    final passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
+    if (password.isNotEmpty) {
+      if (passwordRegex.hasMatch(password))
+        setState(() {
+          passwordValidate = true;
+        });
+      else
+        setState(() {
+          passwordValidate = false;
+        });
+    } else
+      setState(() {
+        passwordValidate = false;
+      });
+  }
+
+  void validateName(String name) {
+    final passwordRegex = RegExp(r'^[a-zA-Z ]*$');
+    if (name.isNotEmpty) {
+      if (passwordRegex.hasMatch(name))
+        setState(() {
+          nameValidate = true;
+        });
+      else
+        setState(() {
+          nameValidate = false;
+        });
+    } else
+      setState(() {
+        nameValidate = false;
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +148,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.account_circle,
                               color: Color(0xFF02340F),
                             ),
-                            errorText: usernameVal == true
-                                ? 'Please enter your Name'
-                                : null,),
+                            errorText:
+                            nameValidate ? null : 'Incorrect Full name',),
+                          onChanged: (value) {
+                            username = value;
+                          },
                         ),
+
                       ),
                     ),
                     Padding(
@@ -134,12 +177,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.mail,
                               color: Color(0xFF02340F),
                             ),
-                            errorText: mail == true
-                                ? 'Please enter your Email Id'
-                                : null,),
+                              errorText:
+                              emailValidate ? null : 'Incorrect Email ID'),
                           onChanged: (value) {
                             email = value;
-
                           },
                         ),
                       ),
@@ -163,9 +204,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       style: BorderStyle.none)),
-                              errorText: passwordVal
-                                  ? 'Please enter your password'
-                                  : null,
+                              errorText: passwordValidate
+                                  ? null
+                                  : 'Password must have minimum 8 characters with at least 1 letter and 1 number',
+                              errorMaxLines: 2,
                               suffixIcon: Icon(
                                 Icons.lock,
                                 color: Color(0xFF02340F),
@@ -188,7 +230,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
                           child: RawMaterialButton(
                             onPressed: () async {
-                              if (isValidu() && isValidm() && isValidp())
+                              validateEmail(mailid.text);
+                              validatePassword(passwordController.text);
+                              validateName(usernameController.text);
+                              if (emailValidate &&  passwordValidate && nameValidate)
                                 try {
                                 final newUser = await _auth
                                     .createUserWithEmailAndPassword(
@@ -198,10 +243,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   Navigator.push(context, MaterialPageRoute(
                                       builder: (context) => HomePage()));
                                 }
+
                               }
                               catch (e) {
                                 print(e);
-                                Fluttertoast.showToast(msg: 'Invalid! Please try again',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Colors.transparent,textColor: Colors.red,fontSize: 12.0);
+                                Fluttertoast.showToast(msg: 'User already exists! Please login',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Colors.transparent,textColor: Colors.red,fontSize: 12.0);
                               }
                             },
                             padding: EdgeInsets.symmetric(horizontal: 70.0),

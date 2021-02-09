@@ -1,9 +1,11 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'adminSetup.dart';
 import 'homepage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:io';
+import 'constants.dart';
 
 String genre1,genre2;
 var languages = [
@@ -17,7 +19,7 @@ var languages = [
   'Japanese',
   'Spanish'
 ];
-var category = ['Novels', 'Educational', 'Comics', 'Mangas', 'Spiritual'];
+var category = ['Novels', 'Educational', 'Comics', 'Spiritual'];
 var subjects = ['Computer Science', 'Chemistry', 'Biology', 'Literature', 'Physics', 'Mathematics', 'Law', 'Accountancy', 'Business', 'Economics', 'Humanities'];
 var genres = ['Action', 'Adventure', 'Classic', 'Comedy', 'Fantasy', 'Fiction', 'History', 'Horror', 'Mystery', 'Poetry', 'Romance', 'Thriller'];
 var currentGenre1Selected;
@@ -26,29 +28,7 @@ var currentLanguageSelected;
 var currentCategorySelected;
 var currentSubjectSelected;
 
-InputDecoration textFieldInputDecoration = InputDecoration(
-  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
-  labelStyle: TextStyle(color: Colors.black),
-  hintText: 'Book Name',
-  suffixIcon: null,
-  border: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.white, width: 0.0),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.white, width: 0.0),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.white, width: 0.0),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-  ),
-  fillColor: Colors.white,
-  hintStyle: TextStyle(
-    color: Colors.grey,
-    fontSize: 15.0,
-  ),
-);
+
 
 class AddBook extends StatefulWidget {
   @override
@@ -60,9 +40,24 @@ class _AddBookState extends State<AddBook> {
   List<Widget> columnChild = [];
 
   Future<File> imageFile;
-  File _image;
-  String bkname,authname,link,description;
+  File _image,_pdf;
+  String bkname,authname,link,description,imageURL;
+  Future getPDF() async {
 
+    FilePickerResult result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    setState(() {
+      if (result != null) {
+        _pdf = File(result.files.single.path);
+        // Use if you only need a single picture
+      } else {
+        print('No pdf selected.');
+      }
+    });
+
+  }
   Future getImage(bool gallery) async {
     ImagePicker picker = ImagePicker();
     PickedFile pickedFile;
@@ -77,50 +72,16 @@ class _AddBookState extends State<AddBook> {
         source: ImageSource.camera,);
     }
 
-    setState(() {
+    setState(() async {
       if (pickedFile != null) {
-        _image = File(pickedFile.path); // Use if you only need a single picture
+        _image = File(pickedFile.path);
+        imageURL = await uploadFile(_image);
       } else {
         print('No image selected.');
       }
     });
   }
- /* pickImageFromGallery(ImageSource source) {
-    setState(() {
-      imageFile = ImagePicker.pickImage(source: source);
-
-    });
-  }
-
-  Widget showImage() {
-    return FutureBuilder<File>(
-      future: imageFile,
-
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
-          return Image.file(
-            snapshot.data,
-            width: 300,
-            height: 300,
-          );
-        } else if (snapshot.error != null) {
-          return const Text(
-            'Error Picking Image',
-            textAlign: TextAlign.center,
-          );
-        } else {
-          return const Text(
-            'No Image Selected',
-            textAlign: TextAlign.center,
-          );
-        }
-      },
-    );
-  }*/
-
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -239,7 +200,7 @@ class _AddBookState extends State<AddBook> {
                           setState(() {
                             currentCategorySelected = newValueSelected;
                             columnChild = [];
-                            if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics' || currentCategorySelected == 'Mangas'){
+                            if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics'){
                               columnChild.add(Divide());
                               columnChild.add(Genre1());
                               columnChild.add(Genre2());
@@ -264,18 +225,6 @@ class _AddBookState extends State<AddBook> {
               ),
               Column(
                 children: columnChild,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                child: Material(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  child: TextField(
-                    onChanged: (val){link = val;},
-                    decoration: textFieldInputDecoration.copyWith(
-                        hintText: 'Link'),
-                  ),
-                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -323,6 +272,40 @@ class _AddBookState extends State<AddBook> {
                   textAlign: TextAlign.center,
                 ))
               ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+                  child: Material(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    child: Container(
+                      width: 200.0,
+                      child: FlatButton.icon(
+                        onPressed: () {
+                          getPDF();
+                        },
+                        icon: Icon(Icons.upload_file),
+                        label: Text('PDF'),
+                      ),
+                    ),),
+                ),
+              ),
+              Center(
+
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
+                    child: _pdf != null ? Container(
+                      child: Text(
+                        'PDF selected',
+                      ),
+                    )
+                        : Container(
+                        child: Text(
+                          'No PDF Selected',
+                          textAlign: TextAlign.center,
+                        ))
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
                 child: Material(
@@ -332,9 +315,9 @@ class _AddBookState extends State<AddBook> {
                   child: RawMaterialButton(
                     onPressed: (){
                       if (currentCategorySelected == 'Spiritual')
-                        addBook(bkname,authname,currentLanguageSelected,currentCategorySelected,link,description,_image);
+                        addBook(bkname,authname,currentLanguageSelected,currentCategorySelected,_pdf,description,imageURL);
                       else
-                        addBook(bkname,authname,currentLanguageSelected,currentCategorySelected,link,description,_image,genre1,genre2);
+                        addBook(bkname,authname,currentLanguageSelected,currentCategorySelected,_pdf,description,imageURL,genre1,genre2);
                       Fluttertoast.showToast(msg: 'Book Added Successfully',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
                     },

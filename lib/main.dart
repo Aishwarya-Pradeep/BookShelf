@@ -1,9 +1,13 @@
+import 'package:bookshelf_admin/addBookDynamic.dart';
+import 'package:bookshelf_admin/add_book.dart';
+import 'package:bookshelf_admin/bookdetailsDynamicPrint.dart';
+import 'package:bookshelf_admin/delete_book.dart';
+import 'package:bookshelf_admin/edit_book.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bookshelf_admin/loginpage.dart';
-import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'edit_book.dart';
+import 'delete_book.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:page_transition/page_transition.dart';
 import 'splash_screen.dart';
 import 'homepage.dart';
 
@@ -28,6 +32,10 @@ class bookshelf_admin extends StatelessWidget {
       routes: {
         '/': (context)=>SplashScreen(),
         '/home': (context)=>HomePage(),
+        '/editBookDe' : (context)=>editBookDetails(),
+        '/deleteBookDe' : (context)=>deleteBookD(),
+        '/printdetAdd' : (context)=>SelectedBook(),
+        '/addBook' : (context)=>AddBook(),
       },
     );
   }

@@ -139,10 +139,10 @@ class _LoginPageState extends State<LoginPage> {
                               final user = await _auth.signInWithEmailAndPassword(
                                   email: email, password: password);
                               if (user != null) {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
                               }
                             }
-                            catch(e){
+                            catch (e){
                               switch(e.code){
                                 case "ERROR_INVALID_EMAIL":
                                   errormsg = "Invalid mail id!Please try again";
@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));},
+                            onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterPage()));},
                             child: Text(
                               ' Register Now',
                               style: TextStyle(

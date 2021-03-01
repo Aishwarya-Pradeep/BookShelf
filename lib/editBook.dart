@@ -1,7 +1,8 @@
-import 'package:bookshelf_admin/edit_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:textfield_search/textfield_search.dart';
+
 
 
 class editBook extends StatefulWidget {
@@ -10,7 +11,23 @@ class editBook extends StatefulWidget {
 }
 
 class _editBookState extends State<editBook> {
-  String bkname;
+  String bkname = null;
+  TextEditingController myController = TextEditingController();
+  var dummyList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    myController.addListener(_printLatestValue);
+  }
+
+  _printLatestValue() {
+    if(myController.text != "")
+      bkname = myController.text;
+    else
+      bkname = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +35,7 @@ class _editBookState extends State<editBook> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Center(
+
             child: Text(
               'BookShelf',
               style: TextStyle(
@@ -54,8 +72,10 @@ class _editBookState extends State<editBook> {
             if (!snapshot.hasData){}
             else {
               List<DropdownMenuItem> currencyItems = [];
+
               for (int i = 0; i < snapshot.data.docs.length; i++) {
                 DocumentSnapshot snap = snapshot.data.docs[i];
+                dummyList.add(snap.id);
                 currencyItems.add(
                   DropdownMenuItem(
                     child: Text(
@@ -67,30 +87,12 @@ class _editBookState extends State<editBook> {
               }
               return Padding(
                 padding: const EdgeInsets.only(
-                    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+                    left: 15.0, right: 15.0),
                 child: Container(
-                  width: 850.0,
+                  width: 700.0,
                   child: Material(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        items: currencyItems,
-                        onChanged: (currencyValue) {
-                          setState(() {
-                            bkname = currencyValue;
-                          });
-                        },
-                        value: bkname,
-                        isExpanded: false,
-                        hint: Padding(
-                          padding: const EdgeInsets.only(left: 30.0),
-                          child: Text(
-                            'Book Name',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                    ),
+                    child: TextFieldSearch(initialList: dummyList, label: "Book Name", controller: myController),
                   ),
                 ),
               );
@@ -106,7 +108,11 @@ class _editBookState extends State<editBook> {
           color: Color(0xFF02340F),
           borderRadius: BorderRadius.circular(30.0),
           child: RawMaterialButton(
-            onPressed: (){Navigator.pushReplacementNamed(context,'/editBookDe',arguments: {'bookname1' : bkname,});},
+            onPressed: (){
+              if(bkname != null)
+                Navigator.pushReplacementNamed(context,'/editBookDe',arguments: {'bookname1' : bkname,});
+              else
+                Fluttertoast.showToast(msg: 'Please select a book',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);},
             padding: EdgeInsets.symmetric(horizontal: 70.0),
             child: Text(
               'SEARCH',

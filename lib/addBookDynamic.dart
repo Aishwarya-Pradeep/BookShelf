@@ -1,6 +1,7 @@
 import 'package:bookshelf_admin/edit_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'constants.dart';
 
 
@@ -10,7 +11,7 @@ class AddBook1 extends StatefulWidget {
 }
 
 class _AddBook1State extends State<AddBook1> {
-  String bkname;
+  String bkname = null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +71,11 @@ class _AddBook1State extends State<AddBook1> {
                     color: Color(0xFF02340F),
                     borderRadius: BorderRadius.circular(30.0),
                     child: RawMaterialButton(
-                      onPressed: (){Navigator.pushReplacementNamed(context,'/printdetAdd',arguments: {'bookname1' : bkname,});},
+                      onPressed: (){
+                        if(bkname != null)
+                          Navigator.pushReplacementNamed(context,'/printdetAdd',arguments: {'bookname1' : bkname,});
+                        else
+                          Fluttertoast.showToast(msg: 'Please enter the book name',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);},
                       padding: EdgeInsets.symmetric(horizontal: 70.0),
                       child: Text(
                         'VERIFY',

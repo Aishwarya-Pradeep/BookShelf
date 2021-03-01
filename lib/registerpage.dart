@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
@@ -5,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'homepage.dart';
 import 'adminSetup.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'loginpage.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -14,6 +16,9 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
 
+  Timer timer;
+  User user;
+  Future<dynamic> coolAlert;
   final _auth = FirebaseAuth.instance;
   String username,email, password;
   bool emailValidate = true, passwordValidate = true, nameValidate = true ;
@@ -24,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    super.dispose();
     usernameController.dispose();
     passwordController.dispose();
     mailid.dispose();
@@ -46,6 +52,29 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         emailValidate = false;
       });
+  }
+  Future<void> checkEmail() async{
+    var user = _auth.currentUser;
+    await user.reload();
+    if (user.emailVerified) {
+      timer.cancel();
+      await adminSetup(usernameController.text);
+      setState(() {
+        coolAlert = CoolAlert.show(
+            context: context,
+            type: CoolAlertType.success,
+            title: 'Successful',
+            text: "Your email has been verified.",
+            confirmBtnText: 'Continue',
+            confirmBtnColor: Color(0xFF02340F),
+            backgroundColor: Color(0xFFCEF6A0),
+            onConfirmBtnTap: (){
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => HomePage()));
+            }
+        );
+      });
+    }
   }
 
   void validatePassword(String password) {
@@ -239,9 +268,20 @@ class _RegisterPageState extends State<RegisterPage> {
                                     .createUserWithEmailAndPassword(
                                     email: email, password: password);
                                 if (newUser != null) {
-                                  adminSetup(usernameController.text);
-                                  Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => HomePage()));
+                                  user = _auth.currentUser;
+                                  user.sendEmailVerification();
+                                  setState(() {
+                                    coolAlert = CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.info,
+                                      confirmBtnColor: Color(0xFF02340F),
+                                      backgroundColor: Color(0xFFCEF6A0),
+                                      title: 'Verify',
+                                      text: "A verification link has been sent to you account. Click on it to verify your email.",
+                                    );
+                                  });
+                                  timer = Timer.periodic(Duration(seconds: 3), (timer) {checkEmail(); });
+
                                 }
 
                               }
@@ -282,7 +322,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
                             },
                             child: Text(
                               'Login',
@@ -306,7 +347,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-
 
     bool isValidu() {
       String text = usernameController.text;

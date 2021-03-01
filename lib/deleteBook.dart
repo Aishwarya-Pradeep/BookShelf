@@ -1,8 +1,7 @@
-import 'package:bookshelf_admin/edit_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'adminSetup.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:textfield_search/textfield_search.dart';
 
 final _firestore = FirebaseFirestore.instance;
 dynamic data;
@@ -12,15 +11,24 @@ class deleteBook extends StatefulWidget {
 }
 
 class _deleteBookState extends State<deleteBook> {
-  String bkname;
+  String bkname = null;
+  TextEditingController mycontrol = new TextEditingController();
   var bookN;
-  _deleteBookState(){
-    getBookNames().then((value) => setState(()
-    {
 
-      bookN = value;
-    }));
-  }
+    _printLatestValue() {
+      if(mycontrol.text != "")
+        bkname = mycontrol.text;
+      else
+        bkname = null;
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      mycontrol.addListener(_printLatestValue);
+    }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,17 +72,10 @@ class _deleteBookState extends State<deleteBook> {
                     builder: (context, snapshot) {
                       if (!snapshot.hasData){}
                       else {
-                        List<DropdownMenuItem> currencyItems = [];
+                        List bknames = [];
                         for (int i = 0; i < snapshot.data.docs.length; i++) {
                           DocumentSnapshot snap = snapshot.data.docs[i];
-                          currencyItems.add(
-                            DropdownMenuItem(
-                              child: Text(
-                                snap.id,
-                              ),
-                              value: "${snap.id}",
-                            ),
-                          );
+                          bknames.add(snap.id);
                         }
                         return Padding(
                           padding: const EdgeInsets.only(
@@ -83,25 +84,7 @@ class _deleteBookState extends State<deleteBook> {
                             width: 850.0,
                             child: Material(
                               borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                items: currencyItems,
-                                onChanged: (currencyValue) {
-                                  setState(() {
-                                    bkname = currencyValue;
-                                  });
-                                },
-                                value: bkname,
-                                isExpanded: false,
-                                hint: Padding(
-                                  padding: const EdgeInsets.only(left: 30.0),
-                                  child: Text(
-                                    'Book Name',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ),
-                              ),
-                            ),
+                              child: TextFieldSearch(initialList: bknames, label: "Book Name", controller: mycontrol),
                             ),
                           ),
                         );
@@ -117,7 +100,11 @@ class _deleteBookState extends State<deleteBook> {
                     color: Color(0xFF02340F),
                     borderRadius: BorderRadius.circular(30.0),
                     child: RawMaterialButton(
-                      onPressed: (){Navigator.pushReplacementNamed(context,'/deleteBookDe',arguments: {'bookname1' : bkname,});},
+                      onPressed: (){
+                        if (bkname != null)
+                          Navigator.pushReplacementNamed(context,'/deleteBookDe',arguments: {'bookname1' : bkname,});
+                        else
+                          Fluttertoast.showToast(msg: 'Please select a book',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);},
                       padding: EdgeInsets.symmetric(horizontal: 70.0),
                       child: Text(
                         'SEARCH',

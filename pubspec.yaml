@@ -40,7 +40,15 @@ dependencies:
   image_picker: ^0.6.0+9
   fluttertoast: ^7.1.6
   firebase_storage: ^5.2.0
+  speech_to_text: ^3.1.0
+  highlight_text: ^0.7.2
+  avatar_glow: ^1.2.0
+  english_words: ^3.1.5
+  cool_alert: ^1.0.3
   permission_handler: ^5.0.1+1
+  flat_icons_flutter: ^1.0.2
+  textfield_search: ^0.7.0
+  speech_recognition: ^0.3.0
   http: ^0.12.2
 
 

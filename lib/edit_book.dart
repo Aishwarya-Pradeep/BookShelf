@@ -91,42 +91,7 @@ class _editBookDetailsState extends State<editBookDetails> {
   Widget build(BuildContext context) {
     bookname1 = ModalRoute.of(context).settings.arguments;
     bookname = bookname1['bookname1'];
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collectionGroup('BookDetails')
-          .where('bookName', isEqualTo: bookname)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final books = snapshot.data.docs;
-          for (var book in books) {
-            img = book.data()['image'];
-            bkname = book.data()['bookName'];
-            authname = book.data()['author'];
-            link = book.data()['link'];
-            currentLanguageSelected = book.data()['language'];
-            description = book.data()['description'];
-            currentCategorySelected = book.data()['category'];
-            if (cat != 'Spiritual'){
-            currentGenre1Selected = book.data()['genre1'];
-            currentGenre2Selected = book.data()['genre2'];}
-          }
-          columnChild = [];
-          if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics'){
-            columnChild.add(Divide());
-            columnChild.add(Genre1());
-            columnChild.add(Genre2());
-            columnChild.add(Divide());
-          }
-          if(currentCategorySelected == 'Educational'){
-            columnChild.add(Divide());
-            columnChild.add(Subject());
-            columnChild.add(Tag());
-            columnChild.add(Divide());
-          }
-          if (currentCategorySelected == 'Spiritual'){
-            columnChild = [];
-          }
-          return Scaffold(
+    return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
               title: Center(
@@ -141,216 +106,245 @@ class _editBookDetailsState extends State<editBookDetails> {
               ),
             ),
             body: SingleChildScrollView(
-              child: Container(
-                color: Color(0xFFCEF6A0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding:
-                      const EdgeInsets.only(top: 15.0, bottom: 7.0, left: 16.0),
-                      child: Text(
-                        'Edit Book',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        child: TextField(
-                          enabled: false,
-                          decoration: textFieldInputDecoration.copyWith(
-                              hintText: bkname),
-                          onChanged: (val){bkname = val;},
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        child: TextField(
-                          onChanged: (val){CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
-                          bookDetails.doc(bookname).update({
-                            'author' : val
-                          });},
-                          decoration: textFieldInputDecoration.copyWith(
-                              hintText: authname),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                      child: Container(
-                        width: 350.0,
-                        child: Material(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-
-                              items: languages.map((String dropDownStringItem) {
-                                return DropdownMenuItem<String>(
-                                    value: dropDownStringItem,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 30.0),
-                                      child: Text(dropDownStringItem),
-                                    ));
-                              }).toList(),
-                              hint: Padding(
-                                padding: const EdgeInsets.only(left: 30.0),
-                                child: Text(
-                                  'Language',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                              onChanged: (String newValueSelected) {CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
-                              bookDetails.doc(bookname).update({
-                                'language' : newValueSelected,
-                              });
-                              },
-                              value: currentLanguageSelected,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        child: TextField(
-                          enabled: false,
-                          decoration: textFieldInputDecoration.copyWith(
-                              hintText: currentCategorySelected),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: columnChild,
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(
-                    //       left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                    //   child: Material(
-                    //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    //     child: TextField(
-                    //       onChanged: (val){CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
-                    //       bookDetails.doc(bookname).update({
-                    //         'link' : val,
-                    //       });},
-                    //       decoration: textFieldInputDecoration.copyWith(
-                    //           hintText: link),
-                    //     ),
-                    //   ),
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        child: TextField(
-                          onChanged: (val){CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
-                          bookDetails.doc(bookname).update({
-                            'description' : val,
-                          });},
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 8,
-                          decoration:
-                          textFieldInputDecoration.copyWith(hintText: description),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                      child: Material(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        child: Container(
-                          width: 200.0,
-                          child: FlatButton.icon(
-                            onPressed: () {
-                              getImage(true);
-                            },
-                            icon: Icon(Icons.image),
-                            label: Text('Image'),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
-                        child: _image != null ? Container(
-                          child: Image.file(
-                            _image,
-                            width: 300,
-                            height: 300,
-                          ),
-
-                        )
-
-                            : Container(
-                            child: Image.network(img,width: 300,
-                              height: 300,))
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                        child: Material(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          child: Container(
-                            width: 200.0,
-                            child: FlatButton.icon(
-                              onPressed: () {
-                                getPDF();
-
-                              },
-                              icon: Icon(Icons.upload_file),
-                              label: Text('PDF'),
-                            ),
-                          ),),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                      child: Material(
-                        elevation: 5.0,
-                        color: Color(0xFF02340F),
-                        borderRadius: BorderRadius.circular(30.0),
-                        child: RawMaterialButton(
-                          onPressed: (){
-                            Fluttertoast.showToast(msg: 'Edited Successfully',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);
-                            Navigator.pop(context);},
-                          padding: EdgeInsets.symmetric(horizontal: 70.0),
-                          child: Text(
-                            'EDIT',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return Center(
-            child: SizedBox(height: 1.0,),
-          );
+              child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collectionGroup('BookDetails')
+        .where('bookName', isEqualTo: bookname)
+        .snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        final books = snapshot.data.docs;
+        for (var book in books) {
+        img = book.data()['image'];
+        bkname = book.data()['bookName'];
+        authname = book.data()['author'];
+        link = book.data()['link'];
+        currentLanguageSelected = book.data()['language'];
+        description = book.data()['description'];
+        currentCategorySelected = book.data()['category'];
+        if (cat != 'Spiritual'){
+          currentGenre1Selected = book.data()['genre1'];
+          currentGenre2Selected = book.data()['genre2'];}
         }
-      },
+    columnChild = [];
+    if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics'){
+    columnChild.add(Divide());
+    columnChild.add(Genre1());
+    columnChild.add(Genre2());
+    columnChild.add(Divide());
+    }
+    if(currentCategorySelected == 'Educational'){
+    columnChild.add(Divide());
+    columnChild.add(Subject());
+    columnChild.add(Tag());
+    columnChild.add(Divide());
+    }
+    if (currentCategorySelected == 'Spiritual'){
+    columnChild = [];
+    }
+    return Container(
+    color: Color(0xFFCEF6A0),
+    child: Column(
+    children: [
+    Padding(
+    padding:
+    const EdgeInsets.only(top: 15.0, bottom: 7.0, left: 16.0),
+    child: Text(
+    'Edit Book',
+    style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16.0,
+    ),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: TextField(
+    enabled: false,
+    decoration: textFieldInputDecoration.copyWith(
+    hintText: bkname),
+    onChanged: (val){bkname = val;},
+    ),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: TextField(
+    onChanged: (val){CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
+    bookDetails.doc(bookname).update({
+    'author' : val
+    });},
+    decoration: textFieldInputDecoration.copyWith(
+    hintText: authname),
+    ),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Container(
+    width: 350.0,
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: DropdownButtonHideUnderline(
+    child: DropdownButton<String>(
+
+    items: languages.map((String dropDownStringItem) {
+    return DropdownMenuItem<String>(
+    value: dropDownStringItem,
+    child: Padding(
+    padding: const EdgeInsets.only(left: 30.0),
+    child: Text(dropDownStringItem),
+    ));
+    }).toList(),
+    hint: Padding(
+    padding: const EdgeInsets.only(left: 30.0),
+    child: Text(
+    'Language',
+    style: TextStyle(color: Colors.grey),
+    ),
+    ),
+    onChanged: (String newValueSelected) {CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
+    bookDetails.doc(bookname).update({
+    'language' : newValueSelected,
+    });
+    },
+    value: currentLanguageSelected,
+    ),
+    ),
+    ),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: TextField(
+    enabled: false,
+    decoration: textFieldInputDecoration.copyWith(
+    hintText: currentCategorySelected),
+    ),
+    ),
+    ),
+    Column(
+    children: columnChild,
+    ),
+    // Padding(
+    //   padding: const EdgeInsets.only(
+    //       left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    //   child: Material(
+    //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    //     child: TextField(
+    //       onChanged: (val){CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
+    //       bookDetails.doc(bookname).update({
+    //         'link' : val,
+    //       });},
+    //       decoration: textFieldInputDecoration.copyWith(
+    //           hintText: link),
+    //     ),
+    //   ),
+    // ),
+    Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: TextField(
+    onChanged: (val){CollectionReference bookDetails = FirebaseFirestore.instance.collection('Books/'+ currentCategorySelected+'/'+'BookDetails');
+    bookDetails.doc(bookname).update({
+    'description' : val,
+    });},
+    keyboardType: TextInputType.multiline,
+    maxLines: 8,
+    decoration:
+    textFieldInputDecoration.copyWith(hintText: description),
+    ),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: Container(
+    width: 200.0,
+    child: FlatButton.icon(
+    onPressed: () {
+    getImage(true);
+    },
+    icon: Icon(Icons.image),
+    label: Text('Image'),
+    ),
+    ),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
+    child: _image != null ? Container(
+    child: Image.file(
+    _image,
+    width: 300,
+    height: 300,
+    ),
+
+    )
+
+        : Container(
+    child: Image.network(img,width: 300,
+    height: 300,))
+    ),
+    Center(
+    child: Padding(
+    padding: const EdgeInsets.only(
+    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+    child: Material(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    child: Container(
+    width: 200.0,
+    child: FlatButton.icon(
+    onPressed: () {
+    getPDF();
+
+    },
+    icon: Icon(Icons.upload_file),
+    label: Text('PDF'),
+    ),
+    ),),
+    ),
+    ),
+    Padding(
+    padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+    child: Material(
+    elevation: 5.0,
+    color: Color(0xFF02340F),
+    borderRadius: BorderRadius.circular(30.0),
+    child: RawMaterialButton(
+    onPressed: (){
+    Fluttertoast.showToast(msg: 'Edited Successfully',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);
+    Navigator.pop(context);},
+    padding: EdgeInsets.symmetric(horizontal: 70.0),
+    child: Text(
+    'EDIT',
+    style: TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+    fontSize: 17.0,
+    ),
+    ),
+    ),
+    ),
+    ),
+    ],
+    ),
+    );
+    }})
+    ),
     );
   }
 

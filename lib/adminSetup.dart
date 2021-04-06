@@ -69,3 +69,8 @@ Future<List> getBookNames() async{
   final List documents = result.docs;
   return documents;
 }
+Future<String> getName() async{
+  DocumentSnapshot variable = await FirebaseFirestore.instance.collection('Admin').doc(FirebaseAuth.instance.currentUser.email).get();
+  return variable['adminName'];
+
+}

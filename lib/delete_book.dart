@@ -108,13 +108,13 @@ class _deleteBookDState extends State<deleteBookD> {
                                     ),
                                 SizedBox(height: 20.0,),
                                 SizedBox(
-                                  width: 220.0,
+                                  width: 150.0,
                                   child: Text(description,
                                     style: TextStyle(
                                       fontSize: 16.0,
-
                                     ),
-                                    maxLines: 5,
+                                    maxLines: 7,
+                                    textAlign: TextAlign.justify,
                                   ),
                                 ),
                                   ],
@@ -138,7 +138,7 @@ class _deleteBookDState extends State<deleteBookD> {
                                       Fluttertoast.showToast(msg: 'Deleted Book Successfully',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);
                                       Navigator.pop(context);},
 
-                                    padding: EdgeInsets.symmetric(horizontal: 150.0),
+                                    padding: EdgeInsets.symmetric(horizontal: 130.0),
                                     child: Text(
                                       'DELETE',
                                       style: TextStyle(

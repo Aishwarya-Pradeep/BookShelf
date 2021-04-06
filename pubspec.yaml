@@ -41,6 +41,8 @@ dependencies:
   fluttertoast: ^7.1.6
   firebase_storage: ^5.2.0
   speech_to_text: ^3.1.0
+  percent_indicator: ^2.1.9+1
+  charts_flutter: ^0.10.0
   highlight_text: ^0.7.2
   avatar_glow: ^1.2.0
   english_words: ^3.1.5

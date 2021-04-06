@@ -123,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Text(
                   'BookShelf',
                   style: TextStyle(
-                    fontSize: 120.0,
+                    fontSize: 100.0,
                     fontFamily: 'Dandelion',
                     color: Color(0xFF02340F),
                   ),
@@ -134,10 +134,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   image: AssetImage('assets/images/admin.png'),
                 ),
                 margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                height: 160,
+                height: 120,
               ),
               SizedBox(
-                height: 20.0,
+                height: 18.0,
               ),
               Container(
                 margin: EdgeInsets.only(left: 15.0, right: 15.0, bottom: 10.0),
@@ -159,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
+                          horizontal: 12.0, vertical: 2.0),
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -188,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
+                          horizontal: 12.0, vertical: 10.0),
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -216,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 20.0),
+                          horizontal: 12.0, vertical: 8.0),
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -269,6 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     email: email, password: password);
                                 if (newUser != null) {
                                   user = _auth.currentUser;
+                                  user.updateProfile(displayName: username);
                                   user.sendEmailVerification();
                                   setState(() {
                                     coolAlert = CoolAlert.show(
@@ -306,7 +307,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                     SizedBox(
-                      height: 30.0,
+                      height: 20.0,
                     ),
                     Padding(
                       padding: EdgeInsets.only(bottom: 20.0),

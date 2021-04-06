@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class DividerWidget extends StatelessWidget {
   final double left, right;
@@ -81,9 +82,7 @@ class BookCard extends StatelessWidget {
             ),
           ],
         ),
-        onTap: () {
-      //    Navigator.push(context, MaterialPageRoute(builder: (context) => SelectedBook(author: author, imageURL: imageURL, title: bookName, path: path,)));
-        },
+        onTap: () {},
       ),
     );
   }
@@ -187,9 +186,7 @@ class GenreCard extends StatelessWidget {
           ),
         ),
       ),
-      onTap: () {
-    //    Navigator.push(context, MaterialPageRoute(builder: (context) => GenreBooks(genre: cardName, path: path,)));
-      },
+      onTap: () {},
     );
   }
 }
@@ -271,9 +268,7 @@ class BigBookCard extends StatelessWidget {
             ),
           ),
         ),
-        onTap: (){
-     //     Navigator.push(context, MaterialPageRoute(builder: (context) => SelectedBook(author: author, imageURL: imageURL, title: bookName, path: path,)));
-        },
+        onTap: (){},
       ),
     );
   }
@@ -331,7 +326,7 @@ class IncompleteBookCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                   /*   Padding(
+                      Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: LinearPercentIndicator(
                           width: 150.0,
@@ -342,8 +337,8 @@ class IncompleteBookCard extends StatelessWidget {
                           trailing: Text('80%', style: TextStyle(color: Colors.black, fontSize: 12.0),),
                           linearStrokeCap: LinearStrokeCap.roundAll,
                           progressColor: Color(0xFF02340F),
-                        ),*/
-                    //  ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

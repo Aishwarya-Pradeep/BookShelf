@@ -46,7 +46,6 @@ class _SelectedBookState extends State<SelectedBook> {
   Future<File> imageFile;
   File _image,_pdf;
   String fileName = "";
-
   Future getPDF() async {
 
     FilePickerResult result = await FilePicker.platform.pickFiles(
@@ -229,67 +228,67 @@ class _SelectedBookState extends State<SelectedBook> {
                     ),
                   )
                       :
-                      imageURL != null ?
+                  imageURL != null ?
                   Image.network(imageURL,width: 120.0,
                     height: 190.0,
                     fit: BoxFit.fill,)
-                  : Text ('Image not selected'),
+                      : Text ('Image not selected'),
                 ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 170.0,
-                          child: /*Text(bName,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 170.0,
+                            child: /*Text(bName,
                             style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w900,
                             ),
                             maxLines: 4,
                           ),*/
-                          TextField(
-                            controller: booknameController,
-                            keyboardType: TextInputType.multiline,
-                            minLines: 1,
-                            maxLines: 4,
-                            onChanged: (value) {
-                              bName = value;
-                              },
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w900,
-
-                            ),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 2.0)
-                            ),
-
-                          ),
-                        ),
-                        SizedBox(
-                          width: 170.0,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 0.0),
-                            child: TextField(
-                              controller: authnameController,
+                            TextField(
+                              controller: booknameController,
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: 4,
                               onChanged: (value) {
-                                author = value;
+                                bName = value;
                               },
                               style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                fontSize: 14.0,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w900,
+
                               ),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 2.0)
                               ),
+
                             ),
                           ),
-                        ),
-                        Container(
+                          SizedBox(
+                            width: 170.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 0.0),
+                              child: TextField(
+                                controller: authnameController,
+                                onChanged: (value) {
+                                  author = value;
+                                },
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 14.0,
+                                ),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 2.0)
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
                             width: 120.0,
                             child: Material(
                               borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -299,9 +298,9 @@ class _SelectedBookState extends State<SelectedBook> {
 
                                   items: languages.map((String dropDownStringItem) {
                                     return DropdownMenuItem<String>(
-                                        value: dropDownStringItem,
-                                        child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
-                                        );
+                                      value: dropDownStringItem,
+                                      child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
+                                    );
                                   }).toList(),
                                   hint: Padding(
                                     padding: const EdgeInsets.only(left: 30.0),
@@ -320,55 +319,55 @@ class _SelectedBookState extends State<SelectedBook> {
                           ),
 
 
-                  Container(
-                      width: 120.0,
-                      child: Material(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            items: category.map((String dropDownStringItem) {
-                              return DropdownMenuItem<String>(
-                                  value: dropDownStringItem,
-                                  child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
-                              );
-                            }).toList(),
-                            hint: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text(
-                                'Category',
-                                style: TextStyle(fontSize: 12.0,),
+                          Container(
+                            width: 120.0,
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  items: category.map((String dropDownStringItem) {
+                                    return DropdownMenuItem<String>(
+                                      value: dropDownStringItem,
+                                      child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
+                                    );
+                                  }).toList(),
+                                  hint: Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: Text(
+                                      'Category',
+                                      style: TextStyle(fontSize: 12.0,),
+                                    ),
+                                  ),
+                                  onChanged: (String newValueSelected) {
+                                    setState(() {
+                                      currentCategorySelected = newValueSelected;
+                                      columnChild = [];
+                                      if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics'){
+                                        columnChild.add(Genre1());
+                                        columnChild.add(Genre2());
+                                      }
+                                      if(currentCategorySelected == 'Educational'){
+                                        columnChild.add(Subject());
+                                        columnChild.add(Tag());
+                                      }
+                                      if (currentCategorySelected == 'Spiritual'){
+                                        columnChild = [];
+                                      }
+                                    });
+                                  },
+                                  value: currentCategorySelected,
+                                ),
                               ),
                             ),
-                            onChanged: (String newValueSelected) {
-                              setState(() {
-                                currentCategorySelected = newValueSelected;
-                                columnChild = [];
-                                if(currentCategorySelected == 'Novels' || currentCategorySelected == 'Comics'){
-                                  columnChild.add(Genre1());
-                                  columnChild.add(Genre2());
-                                }
-                                if(currentCategorySelected == 'Educational'){
-                                  columnChild.add(Subject());
-                                  columnChild.add(Tag());
-                                }
-                                if (currentCategorySelected == 'Spiritual'){
-                                  columnChild = [];
-                                }
-                              });
-                            },
-                            value: currentCategorySelected,
                           ),
-                        ),
-                      ),
-                    ),
 
-                      Row(
-                    children: columnChild,
+                          Row(
+                            children: columnChild,
+                          ),
+                        ]
+                    ),
                   ),
-                    ]
-      ),
-    ),
                 ],
               ),
             ),
@@ -386,7 +385,7 @@ class _SelectedBookState extends State<SelectedBook> {
               //     ),
               //   ],
               // ),
-               child: Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
 
                 children: [
@@ -405,82 +404,82 @@ class _SelectedBookState extends State<SelectedBook> {
                     // child: Material(
                     //   color: Colors.transparent,
                     //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      child: TextField(
-                        onChanged: (val){description = val;},
-                        controller: descController,
-                        keyboardType: TextInputType.multiline,
-                        textAlign: TextAlign.justify,
-                        minLines: 4,
-                        maxLines: 10,
-                      ),
+                    child: TextField(
+                      onChanged: (val){description = val;},
+                      controller: descController,
+                      keyboardType: TextInputType.multiline,
+                      textAlign: TextAlign.justify,
+                      minLines: 4,
+                      maxLines: 10,
+                    ),
                     // ),
                   ),
                 ],
               ),
             ),
             Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
-                    child: Material(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      child: Container(
-                        width: 200.0,
-                        child: FlatButton.icon(
-                          onPressed: () {
-                            getPDF();
-                          },
-                          icon: Icon(Icons.upload_file),
-                          label: Text('PDF'),
-                        ),
-                      ),),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 12.0, right: 12.0, top: 16.0, bottom: 7.0),
+                child: Material(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  child: Container(
+                    width: 200.0,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        getPDF();
+                      },
+                      icon: Icon(Icons.upload_file),
+                      label: Text('PDF'),
                     ),
-            ),
-                  Center(
-
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
-                      child: _pdf != null ? Container(
-                        child: Text(
-                           'PDF selected',
-                        ),
-                      )
-                          : Container(
-                          child: Text(
-                            'No PDF Selected',
-                            textAlign: TextAlign.center,
-                          ))
-                  ),
+                  ),),
+              ),
             ),
             Center(
-            child: Padding(
-              padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-              child: Material(
-                elevation: 5.0,
-                color: Color(0xFF02340F),
-                borderRadius: BorderRadius.circular(30.0),
-                child: RawMaterialButton(
-                  onPressed: () {
-                    if (currentCategorySelected == 'Spiritual')
-                      addBook(bName,author,currentLanguageSelected,currentCategorySelected,_pdf,description,imageURL);
-                    else
-                      addBook(bName,author,currentLanguageSelected,currentCategorySelected,_pdf,description,imageURL,currentGenre1Selected,currentGenre2Selected);
+
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 20.0),
+                  child: _pdf != null ? Container(
+                    child: Text(
+                      'PDF selected',
+                    ),
+                  )
+                      : Container(
+                      child: Text(
+                        'No PDF Selected',
+                        textAlign: TextAlign.center,
+                      ))
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                child: Material(
+                  elevation: 5.0,
+                  color: Color(0xFF02340F),
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: RawMaterialButton(
+                    onPressed: () {
+                      if (currentCategorySelected == 'Spiritual')
+                        addBook(bName,author,currentLanguageSelected,currentCategorySelected,_pdf,description,imageURL);
+                      else
+                        addBook(bName,author,currentLanguageSelected,currentCategorySelected,_pdf,description,imageURL,currentGenre1Selected,currentGenre2Selected);
                       Fluttertoast.showToast(msg: 'Book Added Successfully',toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Color(0xFF02340F),textColor: Color(0xFFCEF6A0),fontSize: 18.0);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-                  }
-                  ,
-                  padding: EdgeInsets.symmetric(horizontal: 70.0),
-                  child: Text(
-                    'ADD',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.0,
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                    }
+                    ,
+                    padding: EdgeInsets.symmetric(horizontal: 70.0),
+                    child: Text(
+                      'ADD',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),),
+              ),),
           ],
         ),
       ),
@@ -495,14 +494,14 @@ class Networking {
 
   Future getData() async {
     try{
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      String data = response.body;
-      var decodedData = jsonDecode(data);
-      return decodedData;
-    }
-    else
-      print(response.statusCode);
+      http.Response response = await http.get(url);
+      if (response.statusCode == 200) {
+        String data = response.body;
+        var decodedData = jsonDecode(data);
+        return decodedData;
+      }
+      else
+        print(response.statusCode);
     }
     catch(e){
       return "error";
@@ -524,36 +523,36 @@ class _SubjectState extends State<Subject> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 125.0,
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              items: subjects.map((String dropDownStringItem) {
-                return DropdownMenuItem<String>(
-                    value: dropDownStringItem,
-                    child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
-                );
-              }).toList(),
-              hint: Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Text(
-                  'Subjects',
-                  style: TextStyle(fontSize: 12.0,),
-                ),
+      width: 121.0,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            items: subjects.map((String dropDownStringItem) {
+              return DropdownMenuItem<String>(
+                value: dropDownStringItem,
+                child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
+              );
+            }).toList(),
+            hint: Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: Text(
+                'Subjects',
+                style: TextStyle(fontSize: 12.0,),
               ),
-              onChanged: (String newValueSelected) {
-                setState(() {
-                  currentGenre1Selected = newValueSelected;
-                  genre1 = newValueSelected;
-                });
-              },
-              value: currentSubjectSelected,
             ),
+            onChanged: (String newValueSelected) {
+              setState(() {
+                currentGenre1Selected = newValueSelected;
+                genre1 = newValueSelected;
+              });
+            },
+            value: currentSubjectSelected,
           ),
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -566,37 +565,37 @@ class _Genre1State extends State<Genre1> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 80.0,
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              items: genres.map((String dropDownStringItem) {
-                return DropdownMenuItem<String>(
-                    value: dropDownStringItem,
-                    child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
-                    );
-              }).toList(),
-              hint: Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Text(
-                  'Genre 1',
-                  style: TextStyle(fontSize: 12.0),
-                ),
+      width: 80.0,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            items: genres.map((String dropDownStringItem) {
+              return DropdownMenuItem<String>(
+                value: dropDownStringItem,
+                child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
+              );
+            }).toList(),
+            hint: Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: Text(
+                'Genre 1',
+                style: TextStyle(fontSize: 12.0),
               ),
-              onChanged: (String newValueSelected) {
-                setState(() {
-                  genre1 = newValueSelected;
-                  currentGenre1Selected = newValueSelected;
-
-                });
-              },
-              value: currentGenre1Selected,
             ),
+            onChanged: (String newValueSelected) {
+              setState(() {
+                genre1 = newValueSelected;
+                currentGenre1Selected = newValueSelected;
+
+              });
+            },
+            value: currentGenre1Selected,
           ),
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -609,8 +608,8 @@ class _Genre2State extends State<Genre2> {
   @override
   Widget build(BuildContext context) {
     return  Padding(
-        padding: const EdgeInsets.only(left: 35.0),
-        child: Container(
+      padding: const EdgeInsets.only(left: 25.0),
+      child: Container(
         width: 80.0,
         child: Material(
           color: Colors.transparent,
@@ -619,9 +618,9 @@ class _Genre2State extends State<Genre2> {
             child: DropdownButton<String>(
               items: genres.map((String dropDownStringItem) {
                 return DropdownMenuItem<String>(
-                    value: dropDownStringItem,
-                    child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
-                    );
+                  value: dropDownStringItem,
+                  child: Text(dropDownStringItem,style: TextStyle(fontSize: 12.0,),),
+                );
               }).toList(),
               hint: Padding(
                 padding: const EdgeInsets.only(left: 5.0),
@@ -669,22 +668,22 @@ class _TagState extends State<Tag> {
   Widget build(BuildContext context) {
     return
       Padding(
-        padding: const EdgeInsets.only(left: 35.0),
-    child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        child: Container(
-          width: 50.0,
-          child: TextField(
-            decoration: InputDecoration(hintText: "Tag"),
-            style: TextStyle(fontSize: 12.0,),
+        padding: const EdgeInsets.only(left: 15.0),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          child: Container(
+            width: 50.0,
+            child: TextField(
+              decoration: InputDecoration(hintText: "Tag"),
+              style: TextStyle(fontSize: 12.0,),
 
-            onChanged: (val) {
-              currentGenre2Selected = val;
-              genre2 = val;
-            },
+              onChanged: (val) {
+                currentGenre2Selected = val;
+                genre2 = val;
+              },
+            ),
           ),
-        ),
-      ),);
+        ),);
   }
 }

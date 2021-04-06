@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   'BookShelf',
                   style: TextStyle(
-                    fontSize: 120.0,
+                    fontSize: 100.0,
                     fontFamily: 'Dandelion',
                     color: Color(0xFF02340F),
                   ),
@@ -48,10 +48,10 @@ class _LoginPageState extends State<LoginPage> {
                   image: AssetImage('assets/images/admin.png'),
                 ),
                 margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                height: 160,
+                height: 120,
               ),
               SizedBox(
-                height: 23.0,
+                height: 18.0,
               ),
               Container(
                 margin: EdgeInsets.only(left: 15.0, right: 15.0, bottom: 10.0),
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
+                          horizontal: 12.0, vertical: 10.0),
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 20.0),
+                          horizontal: 12.0, vertical: 10.0),
                       child: Material(
                         elevation: 5.0,
                           borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 50.0),
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
                       child: GestureDetector(
                         onTap: (){isValid();},
                       child: Material(
@@ -143,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             }
                             catch (e){
+                              print(e);
                               switch(e.code){
                                 case "ERROR_INVALID_EMAIL":
                                   errormsg = "Invalid mail id!Please try again";
@@ -156,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                 default:
                                   errormsg = "Invalid Credentials! Please try again";
                               }
-                              Fluttertoast.showToast(msg: errormsg,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Colors.transparent,textColor: Colors.red,fontSize: 12.0);
+                              Fluttertoast.showToast(msg: e,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM,backgroundColor: Colors.transparent,textColor: Colors.red,fontSize: 12.0);
                             }
                           },
 
@@ -177,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     SizedBox(
-                      height: 10.0,
+                      height: 5.0,
                     ),
                     Padding(
                       padding: EdgeInsets.only(bottom: 20.0),
